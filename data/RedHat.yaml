@@ -4,3 +4,10 @@ certs::key_path: '/etc/pki/tls/private'
 certs::service: 'httpd'
 certs::group: 'root'
 certs::supported_os: true
+certs::keep_files:
+  "%{lookup('certs::cert_path')}/ca-bundle.crt":
+    ensure: link
+    target: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+  "%{lookup('certs::cert_path')}/ca-bundle.trust.crt":
+    ensure: link
+    target: /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt

@@ -29,6 +29,11 @@
 # @example Resource Chaining with Apache Module
 #   Certs::Site<| |> -> Apache::Vhost<| |>
 #
+# @param purge
+#   Boolean for whether or not to purge the certificate directories of unmanaged files.
+#   Optional value. (default: false)
+#   USE WITH CAUTION!
+#
 # @param ca_cert
 #   Boolean for whether to look for a CA certificate file.
 #   Optional value. (default: false).
@@ -235,6 +240,7 @@ define certs::site (
   String $key_mode                                         = $::certs::key_mode,
   Stdlib::Absolutepath $key_path                           = $::certs::key_path,
   Boolean $merge_chain                                     = false,
+  Boolean $purge                                           = false,
   Boolean $merge_dhparam                                   = false,
   Boolean $merge_key                                       = false,
   String $owner                                            = $::certs::owner,
@@ -351,6 +357,12 @@ define certs::site (
     }
   }
 
+  $certs::keep_files.each |$files, $files_data| {
+    file { $files:
+      * => $files_data,
+    }
+  }
+
   if (! defined(File[$cert_path])) {
     file { $cert_path:
       ensure => 'directory',
@@ -386,6 +398,8 @@ define certs::site (
     backup => false,
     owner  => $owner,
     group  => $group,
+    purge  => $purge,
+    recurse => $purge,
     mode   => $key_dir_mode,
   })
 
