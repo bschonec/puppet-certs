@@ -362,15 +362,6 @@ define certs::site (
     }
   }
 
-  # Ensure files that are part of the openssl package are NOT deleted by "managing" them.
-  # Manage these files only if $certs::keep_files is defined. 
-  $keep_files.each |$files, $files_data| {
-    file { $files:
-      * => $files_data,
-    }
-    notify{"file ${files}.":}
-  }
-
   if (! defined(File[$cert_path])) {
     file { $cert_path:
       ensure => 'directory',
@@ -544,4 +535,13 @@ define certs::site (
       notify  => $service_notify,
     })
   }
+  # Ensure files that are part of the openssl package are NOT deleted by "managing" them.
+  # Manage these files only if $certs::keep_files is defined. 
+  $keep_files.each |$files, $files_data| {
+    file { $files:
+      * => $files_data,
+    }
+    notify{"file ${files}.":}
+  }
+
 }
