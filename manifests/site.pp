@@ -34,6 +34,10 @@
 #   Optional value. (default: false)
 #   USE WITH CAUTION!
 #
+# @param keep_files
+#   A Hash of files that are to be kept in the SSL certs directory.
+#   Optional value. (default: OS dependent)
+#
 # @param ca_cert
 #   Boolean for whether to look for a CA certificate file.
 #   Optional value. (default: false).
@@ -241,6 +245,7 @@ define certs::site (
   Stdlib::Absolutepath $key_path                           = $::certs::key_path,
   Boolean $merge_chain                                     = false,
   Boolean $purge                                           = false,
+  Hash $keep_files                                         = {},
   Boolean $merge_dhparam                                   = false,
   Boolean $merge_key                                       = false,
   String $owner                                            = $::certs::owner,
@@ -359,12 +364,11 @@ define certs::site (
 
   # Ensure files that are part of the openssl package are NOT deleted by "managing" them.
   # Manage these files only if $certs::keep_files is defined. 
-  if (defined(File[$certs::keep_files])) {
-    $certs::keep_files.each |$files, $files_data| {
-      file { $files:
-        * => $files_data,
-      }
+  $keep_files.each |$files, $files_data| {
+    file { $files:
+      * => $files_data,
     }
+    notify{"file ${files}.":}
   }
 
   if (! defined(File[$cert_path])) {
