@@ -4,10 +4,17 @@ certs::key_path: '/etc/pki/tls/private'
 certs::service: 'httpd'
 certs::group: 'root'
 certs::supported_os: true
+
+# Files that are part of the openssl package that we DON'T want Puppet to delete
+# so we 'manage' them here.
 certs::keep_files:
   "%{lookup('certs::cert_path')}/ca-bundle.crt":
-    ensure: link
-    target: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+    ensure: present
   "%{lookup('certs::cert_path')}/ca-bundle.trust.crt":
-    ensure: link
-    target: /etc/pki/ca-trust/extracted/openssl/ca-bundle.trust.crt
+    ensure: present
+  "%{lookup('certs::cert_path')}/make-dummy-cert":
+    ensure: present
+  "%{lookup('certs::cert_path')}/Makefile":
+    ensure: present
+  "%{lookup('certs::cert_path')}/renew-dummy-cert":
+    ensure: present
