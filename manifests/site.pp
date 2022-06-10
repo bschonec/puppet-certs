@@ -244,7 +244,7 @@ define certs::site (
   String $key_mode                                         = $::certs::key_mode,
   Stdlib::Absolutepath $key_path                           = $::certs::key_path,
   Boolean $merge_chain                                     = false,
-  Boolean $purge                                           = false,
+  Boolean $purge                                           = $::certs::purge,
   Hash $keep_files                                         = {},
   Boolean $merge_dhparam                                   = false,
   Boolean $merge_key                                       = false,

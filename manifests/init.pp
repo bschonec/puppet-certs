@@ -165,6 +165,10 @@
 #   Failure will cause the catalog to fail compilation.
 #   Optional value. (default: false).
 #
+# @param purge
+#   Boolean for whether or not to purge the certificate directories of unmanaged files.
+#   Optional value. (default: false)
+#   USE WITH CAUTION!
 class certs (
   String $cert_dir_mode,
   String $cert_ext,
@@ -193,6 +197,7 @@ class certs (
   Hash $sites                                              = {},
   Optional[String] $source_path                            = undef,
   Boolean $supported_os                                    = false,
+  Boolean $purge                                           = false,
   Boolean $validate_x509                                   = false,
   Optional[String] $ca_source_path                         = $source_path,
   Optional[String] $chain_source_path                      = $source_path,
